@@ -27,7 +27,7 @@ const { createVerifier, brand } = taxonify(relationships)
 Make a verifier function (or two)
 ```javascript
 const isTruck = createVerifier('truck')
-const isHonda = createCreateVerifier('honda')
+const isHonda = createVerifier('honda')
 ```
 
 Brand an object with one of your categories

@@ -1,14 +1,18 @@
 {
   "name": "taxonify",
   "version": "1.0.0",
-  "description": "",
+  "description": "Categorization helper library",
   "main": "main.js",
   "scripts": {
     "prepublish": "npm run build",
     "build": "BABEL_ENV=rollup node build",
     "test": "BABEL_ENV=test babel-node test/test"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dlmanning/taxonify.git"
+  },
+  "author": "David Manning",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.2.0",
