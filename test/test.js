@@ -1,5 +1,5 @@
 import test from 'tape'
-import { createTypeStore, createUtilities } from '../main'
+import { createTypeStore, createUtilities } from '../src'
 import relationships from './dtr'
 import {
   PLANE,
