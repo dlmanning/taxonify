@@ -1,13 +1,13 @@
 import invariant from 'invariant'
 
-export default (isRecognized, typeKey) => (obj, category) => {
+export default (isDefined, typeKey) => (obj, category) => {
   invariant(
     obj != null && typeof obj === 'object',
     'Expected object to be passed into brand'
   )
 
   invariant(
-    isRecognized(category),
+    isDefined(category),
     'Unknown category: %s', category
   )
 

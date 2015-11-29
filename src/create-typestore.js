@@ -18,7 +18,7 @@ export default function createTypeStore (buildRelationships) {
     }
   }
 
-  function isRecognized (category) {
+  function isDefined (category) {
     return recognizedCategories.has(category)
   }
 
@@ -34,7 +34,7 @@ export default function createTypeStore (buildRelationships) {
 
   function expand (category) {
     invariant(
-      isRecognized(category),
+      isDefined(category),
       'Typestore: Unknown category: %s', category
     )
 
@@ -43,10 +43,11 @@ export default function createTypeStore (buildRelationships) {
     let categoriesToExpand = [ category ]
     while (categoriesToExpand.length > 0) {
       const nextCategory = categoriesToExpand.pop()
+      expandedCategories.add(nextCategory)
+
       if (categories.has(nextCategory)) {
         reduce(categories.get(nextCategory), (accum, category) => {
-          if (category !== nextCategory &&
-              !expandedCategories.has(nextCategory)) {
+          if (!expandedCategories.has(category)) {
             categoriesToExpand.push(category)
           }
 
@@ -54,7 +55,6 @@ export default function createTypeStore (buildRelationships) {
         }, categoriesToExpand)
       }
 
-      expandedCategories.add(nextCategory)
     }
 
     return [...expandedCategories]
@@ -62,7 +62,7 @@ export default function createTypeStore (buildRelationships) {
 
   function is (category) {
     invariant(
-      isRecognized(category),
+      isDefined(category),
       'Typestore: Unknown category: %s', category
     )
 
@@ -73,7 +73,7 @@ export default function createTypeStore (buildRelationships) {
     return type => search(setOfSubcategories, type)
   }
 
-  return { is, expand, compare, isRecognized }
+  return { is, expand, compare, isDefined }
 
   function define (category, subcategories) {
     invariant(

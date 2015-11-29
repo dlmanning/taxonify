@@ -1,4 +1,5 @@
 import test from 'tape'
+import tapSpec from 'tap-spec'
 import { createTypeStore, createUtilities } from '../src'
 import relationships from './dtr'
 import {
@@ -14,6 +15,10 @@ import {
   TACOMA,
   CAMRY
 } from './types'
+
+test.createStream()
+  .pipe(tapSpec())
+  .pipe(process.stdout)
 
 const typeKey = Symbol('Test')
 const store = createTypeStore(relationships)
@@ -39,6 +44,22 @@ const isCar = createVerifier(CAR)
 const isToyota = createVerifier(TOYOTA)
 const isCamry = createVerifier(CAMRY)
 const isAccord = createVerifier(ACCORD)
+
+test('category expansion', t => {
+  const { expand } = store
+
+  const automobileSubcategories
+    = [ AUTOMOBILE, CAR, TRUCK, RIDGELINE, ACCORD, TACOMA, CAMRY]
+
+  const expanded = expand('automobile')
+
+  t.ok(
+    expanded.every(item => automobileSubcategories.indexOf(item) > -1) &&
+    automobileSubcategories.every(item => expanded.indexOf(item) > -1),
+    'correctly expanded automobiles'
+  )
+  t.end()
+})
 
 test('branding', t => {
   const typedObject = brand({}, TRAIN)

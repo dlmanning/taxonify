@@ -1,6 +1,6 @@
 import invariant from 'invariant'
 
-export default (is, isRecognized, typeKey) => category => {
+export default (is, isDefined, typeKey) => category => {
   const checker = is(category)
 
   return obj => {
@@ -15,7 +15,7 @@ export default (is, isRecognized, typeKey) => category => {
     )
 
     invariant(
-      isRecognized(obj[typeKey]),
+      isDefined(obj[typeKey]),
       'Passed object has an unrecognized type key: ' +
       'Did you make this yourself? Consider using brand() instead'
     )
