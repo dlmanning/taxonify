@@ -1,0 +1,12 @@
+{
+  "env": {
+    "rollup": {
+      "presets": ["es2015-rollup"],
+      "plugins": ["transform-object-assign", "transform-runtime"]
+    },
+    "test": {
+      "presets": ["es2015"],
+      "plugins": ["transform-object-assign", "transform-runtime"]
+    }
+  },
+}
