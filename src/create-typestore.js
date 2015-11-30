@@ -10,7 +10,7 @@ export default function createTypeStore (buildRelationships) {
   const categories = new Map()
   const recognizedCategories = new Set()
 
-  buildRelationships(define)
+  buildRelationships(def)
 
   for (let setOfSubcategories of categories.values()) {
     for (let subcategory of setOfSubcategories) {
@@ -75,7 +75,7 @@ export default function createTypeStore (buildRelationships) {
 
   return { is, expand, compare, isDefined }
 
-  function define (category, subcategories) {
+  function def (category, subcategories) {
     invariant(
       category != null,
       'define requires at least one argument'
