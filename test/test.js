@@ -12,6 +12,8 @@ import {
   TRUCK,
   RIDGELINE,
   ACCORD,
+  ACCORD_SEDAN,
+  ACCORD_COUPE,
   TACOMA,
   CAMRY
 } from './types'
@@ -33,6 +35,9 @@ const car = brand({}, CAR)
 const honda = brand({}, HONDA)
 const toyota = brand({}, TOYOTA)
 const accord = brand({}, ACCORD)
+const accord_sedan = brand({}, ACCORD_SEDAN)
+const accord_coupe = brand({}, ACCORD_COUPE)
+
 const camry = brand({}, CAMRY)
 
 const isAutomobile = createVerifier(AUTOMOBILE)
@@ -46,10 +51,19 @@ const isCamry = createVerifier(CAMRY)
 const isAccord = createVerifier(ACCORD)
 
 test('category expansion', t => {
-  const { expand } = store
+  const { expand, compare, sort } = store
 
-  const automobileSubcategories
-    = [ AUTOMOBILE, CAR, TRUCK, RIDGELINE, ACCORD, TACOMA, CAMRY]
+  const automobileSubcategories = [
+    AUTOMOBILE,
+    CAR,
+    ACCORD_SEDAN,
+    RIDGELINE,
+    TACOMA,
+    TRUCK,
+    ACCORD,
+    ACCORD_COUPE,
+    CAMRY
+  ]
 
   const expanded = expand('automobile')
 
@@ -58,6 +72,7 @@ test('category expansion', t => {
     automobileSubcategories.every(item => expanded.indexOf(item) > -1),
     'correctly expanded automobiles'
   )
+
   t.end()
 })
 
@@ -112,17 +127,19 @@ test('basic type verification', t => {
 
 test('dispatch on type', t => {
   const thingsThatMoveYou = [ plane, train, automobile, truck, car, accord,
-    camry, honda, toyota ]
+    camry, honda, toyota, accord_sedan ]
 
   const bins = {
     automobiles: [],
     cars: [],
     planes: [],
     accords: [],
+    accord_sedans: [],
     misc:  []
   }
 
   const dispatch = createDispatcher({
+    [ACCORD_SEDAN]: obj => bins.accord_sedans.push(obj),
     [AUTOMOBILE]: obj => bins.automobiles.push(obj),
     [CAR]: obj => bins.cars.push(obj),
     [PLANE]: obj => bins.planes.push(obj),
@@ -130,6 +147,11 @@ test('dispatch on type', t => {
   }, obj => bins.misc.push(obj))
 
   thingsThatMoveYou.forEach(thing => dispatch(thing))
+
+  t.ok(
+    bins.accord_sedans.length === 1 && bins.accord_sedans.indexOf(accord_sedan) > -1,
+    'properly dispatched accord sedan'
+  )
 
   t.ok(
     bins.accords.length === 1 && bins.accords.indexOf(accord) > -1,
