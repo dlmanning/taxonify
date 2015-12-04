@@ -22,14 +22,47 @@ export default function createTypeStore (buildRelationships) {
     return recognizedCategories.has(category)
   }
 
-  function compare (a, b) {
-    if (categories.has(a) && search(categories.get(a), b)) {
-      return -1
-    } else if (categories.has(b) && search(categories.get(b), a)) {
-      return 1
-    } else {
-      return 0
+  function sort (unsorted) {
+    invariant(
+      Array.isArray(unsorted) &&
+      unsorted.every(item => recognizedCategories.has(item)),
+      'sort requires an array of known categories'
+    )
+
+    const sorted = [], marked = new Set(), unmarked = new Set(unsorted)
+
+    while (marked.size < unsorted.length) {
+      const n = [...unmarked][0]
+      visit(n)
     }
+
+    return sorted
+
+    function visit (n, visited = new Set()) {
+      invariant(
+        !visited.has(n),
+        'A cyclic dependency exists in category defintions. ' +
+        'Unable to apply topographical sort'
+      )
+
+      if (!marked.has(n)) {
+        visited.add(n)
+        const edges = categories.get(n) || []
+        for (const m of edges) {
+          if (m !== n) {
+            visit(m, visited)
+          }
+        }
+        visited.delete(n)
+
+        if (unmarked.has(n)) {
+          marked.add(n)
+          unmarked.delete(n)
+          sorted.unshift(n)
+        }
+      }
+    }
+
   }
 
   function expand (category) {
@@ -73,7 +106,7 @@ export default function createTypeStore (buildRelationships) {
     return type => search(setOfSubcategories, type)
   }
 
-  return { is, expand, compare, isDefined }
+  return { is, expand, isDefined, sort }
 
   function def (category, subcategories) {
     invariant(

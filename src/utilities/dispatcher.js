@@ -1,14 +1,15 @@
 import invariant from 'invariant'
 
-export default (compare, expand, typeKey) => (hash, defaultFn) => {
+export default (sort, expand, typeKey) => (hash, defaultFn) => {
   invariant(
     hash != null && typeof hash === 'object' && !Array.isArray(hash),
     'createDispatcher requires an object hash'
   )
 
-  const expandedSequence = Object.entries(hash)
-    .sort((a, b) => compare(a[0], b[0]))
-    .reduce((accum, [type, fn]) => {
+  const orderedHashKeys = sort(Object.keys(hash))
+
+  const expandedSequence = orderedHashKeys.reduce((accum, type) => {
+      const fn = hash[type]
       invariant(
         typeof fn === 'function',
         'createDispatcher requires hash values to be functions'
