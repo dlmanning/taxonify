@@ -31,7 +31,7 @@ export default function createTypeStore (buildRelationships) {
 
     const sorted = [], marked = new Set(), unmarked = new Set(unsorted)
 
-    while (marked.size < unsorted.length) {
+    while (unmarked.size > 0) {
       const n = [...unmarked][0]
       visit(n)
     }
