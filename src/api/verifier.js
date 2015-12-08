@@ -1,6 +1,6 @@
 import invariant from 'invariant'
 
-export default (is, isDefined, typeKey) => category => {
+export default ({ is, isDefined }, typeKey) => category => {
   const checker = is(category)
 
   return obj => {

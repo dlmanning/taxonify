@@ -50,8 +50,8 @@ const isToyota = createVerifier(TOYOTA)
 const isCamry = createVerifier(CAMRY)
 const isAccord = createVerifier(ACCORD)
 
-test('category expansion', t => {
-  const { expand, compare, sort } = store
+test('store accessors', t => {
+  const { expand, sort, is } = store
 
   const automobileSubcategories = [
     AUTOMOBILE,
@@ -65,11 +65,19 @@ test('category expansion', t => {
     CAMRY
   ]
 
+  const sortedAutomobileSubcategories = sort(automobileSubcategories)
+
+  t.ok(
+    sortedAutomobileSubcategories.length === automobileSubcategories.length &&
+    arraysHaveSameElements(automobileSubcategories, sortedAutomobileSubcategories) &&
+    isTopologicallySorted(sortedAutomobileSubcategories, is),
+    'correctly sorted automobile categories'
+  )
+
   const expanded = expand('automobile')
 
   t.ok(
-    expanded.every(item => automobileSubcategories.indexOf(item) > -1) &&
-    automobileSubcategories.every(item => expanded.indexOf(item) > -1),
+    arraysHaveSameElements(expanded, automobileSubcategories),
     'correctly expanded automobiles'
   )
 
@@ -149,7 +157,8 @@ test('dispatch on type', t => {
   thingsThatMoveYou.forEach(thing => dispatch(thing))
 
   t.ok(
-    bins.accord_sedans.length === 1 && bins.accord_sedans.indexOf(accord_sedan) > -1,
+    bins.accord_sedans.length === 1 &&
+    bins.accord_sedans.indexOf(accord_sedan) > -1,
     'properly dispatched accord sedan'
   )
 
@@ -207,3 +216,87 @@ test('dispatch on type', t => {
 
   t.end()
 })
+
+test('dispatches on typed function', t => {
+  const thingsThatMoveYou = [ plane, train, automobile, truck, car, accord,
+    camry, honda, toyota, accord_sedan ]
+
+  const bins = {
+    automobiles: [],
+    cars: [],
+    planes: [],
+    accords: [],
+    accord_sedans: [],
+    misc:  []
+  }
+
+  const dispatch = createDispatcher([
+    brand(obj => bins.accord_sedans.push(obj), ACCORD_SEDAN),
+    brand(obj => bins.automobiles.push(obj), AUTOMOBILE),
+    brand(obj => bins.cars.push(obj), CAR),
+    brand(obj => bins.planes.push(obj), PLANE),
+    brand(obj => bins.accords.push(obj), ACCORD)
+  ], obj => bins.misc.push(obj))
+
+  thingsThatMoveYou.forEach(thing => dispatch(thing))
+
+  t.ok(
+    bins.accord_sedans.length === 1 &&
+    bins.accord_sedans.indexOf(accord_sedan) > -1,
+    'properly dispatched accord sedan'
+  )
+
+  t.ok(
+    bins.accords.length === 1 && bins.accords.indexOf(accord) > -1,
+    'properly dispatched accords'
+  )
+
+  t.ok(
+    bins.cars.length === 2 &&
+    bins.cars.indexOf(car) > -1 &&
+    bins.cars.indexOf(camry) > -1,
+    'properly dispatched cars'
+  )
+
+  t.ok(
+    bins.automobiles.length === 2 &&
+    bins.automobiles.indexOf(automobile) > -1 &&
+    bins.automobiles.indexOf(truck) > -1,
+    'properly dispatched automobiles'
+  )
+
+  t.ok(
+    bins.planes.length === 1 && bins.planes.indexOf(plane) > -1,
+    'properly dispatched planes'
+  )
+
+  t.ok(
+    bins.misc.length === 3 &&
+    bins.misc.indexOf(train) > -1 &&
+    bins.misc.indexOf(honda) > -1 &&
+    bins.misc.indexOf(toyota) > -1,
+    'properly dispatched misc'
+  )
+
+  t.end()
+})
+
+function isTopologicallySorted (array, isPredecessor) {
+  return array.reduce(({ previous, value = true }, current) =>
+    value === false
+      ? { value: false }
+      : {
+        previous: current,
+        value: previous != null
+          ? !(isPredecessor(current)(previous))
+          : true
+      }
+  ).value
+}
+
+function arraysHaveSameElements (a, b) {
+  return (
+    a.every(item => b.indexOf(item) !== -1) &&
+    b.every(item => a.indexOf(item) !== -1)
+  )
+}
