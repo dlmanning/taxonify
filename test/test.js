@@ -198,9 +198,9 @@ test('dispatch on type', t => {
     'submarine': () => {}
   }), 'throws when passed a map with an unknown property')
 
-  t.throws(createDispatcher.bind(null, {
-    [AUTOMOBILE]: 'blerp'
-  }), 'throws when passed a map with non-function values')
+  // t.throws(createDispatcher.bind(null, {
+  //   [AUTOMOBILE]: 'blerp'
+  // }), 'throws when passed a map with non-function values')
 
   const dispatchNoDefaults = createDispatcher({
     [AUTOMOBILE]: obj => bins.automobiles.push(obj),

@@ -29,7 +29,7 @@ const createDispatcher = (branchTable, defaultFn, typeKey) => {
   }
 }
 
-export default ({ sort, expand }, typeKey) => (collection, defaultFn) => {
+export default ({ sort, expand, isDefined }, typeKey) => (collection, defaultFn) => {
   invariant(
     collection != null && typeof collection === 'object',
     'createDispatcher requires a collection'
@@ -40,11 +40,9 @@ export default ({ sort, expand }, typeKey) => (collection, defaultFn) => {
   const orderedHashKeys = sort(Object.keys(hash))
 
   const expandedSequence = orderedHashKeys.reduce((accum, type) => {
-      const fn = hash[type]
-      invariant(
-        typeof fn === 'function',
-        'createDispatcher requires hash values to be functions'
-      )
+      const fn = typeof hash[type] === 'function'
+        ? hash[type]
+        : () => hash[type]
 
       accum.push(
         expand(type).reduce((expanded, category) => {

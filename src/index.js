@@ -1,5 +1,5 @@
-import createStore from './store'
-import createUtilities from './api'
+import createStore from './store/index'
+import createUtilities from './api/index'
 
 export const taxonify = (relationships, typeKey = Symbol('taxonify')) => {
   const store = createStore(relationships)
