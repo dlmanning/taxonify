@@ -1,7 +1,7 @@
 import invariant from 'invariant'
 import reduce from 'universal-reduce'
 
-const createDispatcher = (branchTable, defaultFn, typeKey) => {
+function createDispatcher (branchTable, defaultFn, typeKey) {
   const branchTableRecognizedSymbols = new Set(Object.keys(branchTable))
 
   return obj => {
@@ -29,42 +29,51 @@ const createDispatcher = (branchTable, defaultFn, typeKey) => {
   }
 }
 
-export default ({ sort, expand, isDefined }, typeKey) => (collection, defaultFn) => {
-  invariant(
-    collection != null && typeof collection === 'object',
-    'createDispatcher requires a collection'
-  )
+export default ({ sort, expand, isDefined }, typeKey) => {
+  return function createCreateDispatcher (collection, defaultFn) {
+    invariant(
+      collection != null && typeof collection === 'object',
+      'createDispatcher requires a collection'
+    )
 
-  const hash = makeCategoryHash(collection)
+    const hash = makeCategoryHash(collection)
 
-  const orderedHashKeys = sort(Object.keys(hash))
+    const orderedHashKeys = sort(Object.keys(hash))
 
-  const expandedSequence = orderedHashKeys.reduce((accum, type) => {
-      const fn = typeof hash[type] === 'function'
-        ? hash[type]
-        : () => hash[type]
+    const expandedSequence = orderedHashKeys.reduce((accum, type) => {
+        const fn = typeof hash[type] === 'function'
+          ? hash[type]
+          : () => hash[type]
 
-      accum.push(
-        expand(type).reduce((expanded, category) => {
-          expanded[category] = fn
-          return expanded
-        }, {})
-      )
+        accum.push(
+          expand(type).reduce((expanded, category) => {
+            expanded[category] = fn
+            return expanded
+          }, {})
+        )
 
-      return accum
-    }, [])
+        return accum
+      }, [])
 
-  const branchTable = Object.assign({}, ...expandedSequence)
+    const branchTable = Object.assign({}, ...expandedSequence)
 
-  return createDispatcher(branchTable, defaultFn, typeKey)
+    return createDispatcher(branchTable, defaultFn, typeKey)
+  }
 
   function makeCategoryHash (collection) {
     return reduce(collection, (hash, value, key) => {
-      if(value[typeKey] != null) {
-        hash[value[typeKey]] = value
-      } else {
-        hash[key] = value
-      }
+      const category = isDefined(key)
+        ? key
+        : value[typeKey] != null && isDefined(value[typeKey])
+          ? value[typeKey]
+          : undefined
+
+      invariant(
+        category != null,
+        'unable to determine a valid category for: ' + key
+      )
+
+      hash[category] = value
 
       return hash
     }, {})
