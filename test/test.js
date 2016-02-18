@@ -24,7 +24,7 @@ test.createStream()
 
 const typeKey = Symbol('Test')
 const store = createTypeStore(relationships)
-const { createVerifier, createDispatcher, brand }
+const { createVerifier, createDispatcher, brand, categoryOf }
   = createUtilities(store, typeKey)
 
 const plane = brand({}, PLANE)
@@ -80,6 +80,13 @@ test('store accessors', t => {
     arraysHaveSameElements(expanded, automobileSubcategories),
     'correctly expanded automobiles'
   )
+
+  t.end()
+})
+
+test('categoryOf', t => {
+  const typedObject = brand({}, TRAIN)
+  t.ok(categoryOf(typedObject) === TRAIN, 'got type of typed object')
 
   t.end()
 })
