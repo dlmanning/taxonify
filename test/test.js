@@ -24,7 +24,7 @@ test.createStream()
 
 const typeKey = Symbol('Test')
 const store = createTypeStore(relationships)
-const { createVerifier, createDispatcher, brand, categoryOf }
+const { createVerifier, createDispatcher, createMap, brand, categoryOf }
   = createUtilities(store, typeKey)
 
 const plane = brand({}, PLANE)
@@ -139,6 +139,26 @@ test('basic type verification', t => {
   t.end()
 })
 
+test('map a type to a value', t => {
+  const thingsThatMoveYou = [ PLANE, TRAIN, AUTOMOBILE, TRUCK, CAR, ACCORD,
+    CAMRY, HONDA, TOYOTA, ACCORD_SEDAN ]
+
+  const map = createMap({
+    [ACCORD_SEDAN]: 1,
+    [AUTOMOBILE]: 2,
+    [CAR]: 3,
+    [PLANE]: 4,
+    [ACCORD]: 5
+  }, 6)
+
+  t.deepEqual(
+    thingsThatMoveYou.map(map),
+    [4, 6, 2, 2, 3, 5, 3, 6, 6, 1],
+    'mapped correctly'
+  )
+
+  t.end()
+})
 
 test('dispatch on type', t => {
   const thingsThatMoveYou = [ plane, train, automobile, truck, car, accord,

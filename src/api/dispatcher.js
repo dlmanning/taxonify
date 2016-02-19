@@ -1,53 +1,73 @@
 import invariant from 'invariant'
 import reduce from 'universal-reduce'
 
-function createDispatcher (branchTable, defaultFn, typeKey) {
-  const branchTableRecognizedSymbols = new Set(Object.keys(branchTable))
-
-  return obj => {
-    invariant(
-      typeof obj === 'object',
-      'dispatch expected an object'
-    )
-
-    const objectTypeSymbol = obj[typeKey]
-
-    invariant(
-      objectTypeSymbol != null,
-      'dispatch expects passed objects to have been typed. ' +
-      'Consider using brand()'
-    )
-
-    invariant(
-      branchTableRecognizedSymbols.has(objectTypeSymbol) ||
-      typeof defaultFn === 'function',
-      'Passed object\'s type key not found in branch map and no ' +
-      'function provided'
-    )
-
-    return (branchTable[objectTypeSymbol] || defaultFn)(obj)
-  }
-}
-
 export default ({ sort, expand, isDefined }, typeKey) => {
-  return function createCreateDispatcher (collection, defaultFn) {
+  return {
+    createMap: (collection, defaultBranch) =>
+      factory(collection, defaultBranch).map,
+    createDispatcher: (collection, defaultBranch) =>
+      factory(collection, defaultBranch).dispatcher
+  }
+
+  function factory (collection, defaultBranch) {
+    const branchTable = createBranchTable(collection)
+    const branchTableRecognizedSymbols = new Set(Object.keys(branchTable))
+
+    return { map, dispatcher }
+
+    function map (type) {
+      invariant(
+        isDefined(type),
+        `map: unknown type passed to createMap`
+      )
+
+      invariant(
+        branchTableRecognizedSymbols.has(type) ||
+        defaultBranch != null,
+          `map: Passed type key not found in branch map and no default value provided`
+      )
+
+      return (branchTable[type] || defaultBranch)
+    }
+
+    function dispatcher (obj) {
+      invariant(
+        typeof obj === 'object',
+        'dispatch expected an object'
+      )
+
+      const objectTypeSymbol = obj[typeKey]
+
+      invariant(
+        objectTypeSymbol != null,
+        `dispatcher: passed object is not typed`
+      )
+
+      invariant(
+        branchTableRecognizedSymbols.has(objectTypeSymbol) ||
+        typeof defaultBranch === 'function',
+        `dispatcher: Passed object's type key not found in branch map and no default function provided`
+      )
+
+      return (branchTable[objectTypeSymbol] || defaultBranch)(obj)
+    }
+
+    return createDispatcher
+  }
+
+  function createBranchTable (collection) {
     invariant(
       collection != null && typeof collection === 'object',
-      'createDispatcher requires a collection'
+      'createBranchTable requires a collection'
     )
 
     const hash = makeCategoryHash(collection)
-
     const orderedHashKeys = sort(Object.keys(hash))
 
     const expandedSequence = orderedHashKeys.reduce((accum, type) => {
-        const fn = typeof hash[type] === 'function'
-          ? hash[type]
-          : () => hash[type]
-
         accum.push(
           expand(type).reduce((expanded, category) => {
-            expanded[category] = fn
+            expanded[category] = hash[type]
             return expanded
           }, {})
         )
@@ -57,7 +77,7 @@ export default ({ sort, expand, isDefined }, typeKey) => {
 
     const branchTable = Object.assign({}, ...expandedSequence)
 
-    return createDispatcher(branchTable, defaultFn, typeKey)
+    return branchTable
   }
 
   function makeCategoryHash (collection) {
@@ -78,4 +98,5 @@ export default ({ sort, expand, isDefined }, typeKey) => {
       return hash
     }, {})
   }
+
 }
