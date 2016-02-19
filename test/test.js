@@ -115,7 +115,7 @@ test('basic type verification', t => {
   t.ok(isTruck(truck), 'a truck is a truck')
   t.ok(isCar(car), 'a car is a car')
   t.notOk(isTruck(car), 'a car is not a truck')
-  t.notOk(isCar(truck), 'a truck is not a car')
+  t.notOk(isCar('truck'), 'a truck is not a car')
 
   t.ok(isAutomobile(camry), 'a camry is an automobile')
   t.ok(isCar(camry), 'a camry is a car')
@@ -124,16 +124,14 @@ test('basic type verification', t => {
   t.notOk(isTruck(camry), 'a camry is not a truck')
   t.notOk(isHonda(camry), 'a camry is not a honda')
   t.notOk(isAccord(camry), 'a camry is not an accord')
-
-  t.throws(
-    createVerifier.bind(null, 'submarine'),
-    /Unknown category: submarine/,
-   'createVerifier throws if passed an unrecognized category'
+  t.notOk(
+    isAutomobile('submarine'),
+    'verifier function returns false if passed an unrecognized category'
   )
 
   t.throws(
-    isAutomobile.bind(null, { [typeKey]: 'submarine' }),
-    'verifier function throws if passed an unrecognized category'
+    createVerifier.bind(null, 'submarine'),
+   'createVerifier throws if passed an unrecognized category'
   )
 
   t.end()
