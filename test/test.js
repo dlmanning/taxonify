@@ -24,8 +24,8 @@ test.createStream()
 
 const typeKey = Symbol('Test')
 const store = createTypeStore(relationships)
-const { createVerifier, createDispatcher, createMap, brand, categoryOf }
-  = createUtilities(store, typeKey)
+const { createVerifier, createDispatcher, createMap, brand, categoryOf } =
+  createUtilities(store, typeKey)
 
 const plane = brand({}, PLANE)
 const train = brand({}, TRAIN)
@@ -36,7 +36,6 @@ const honda = brand({}, HONDA)
 const toyota = brand({}, TOYOTA)
 const accord = brand({}, ACCORD)
 const accord_sedan = brand({}, ACCORD_SEDAN)
-const accord_coupe = brand({}, ACCORD_COUPE)
 
 const camry = brand({}, CAMRY)
 
@@ -168,7 +167,7 @@ test('dispatch on type', t => {
     planes: [],
     accords: [],
     accord_sedans: [],
-    misc:  []
+    misc: []
   }
 
   const dispatch = createDispatcher({
@@ -252,7 +251,7 @@ test('dispatches on typed function', t => {
     planes: [],
     accords: [],
     accord_sedans: [],
-    misc:  []
+    misc: []
   }
 
   const dispatch = createDispatcher([
