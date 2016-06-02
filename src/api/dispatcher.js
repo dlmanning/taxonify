@@ -18,19 +18,19 @@ export default ({ sort, expand, isDefined }, typeKey) => {
     function map (type) {
       invariant(
         isDefined(type),
-        `map: unknown type passed to createMap`
+        'map: unknown type passed to createMap'
       )
 
       invariant(
         branchTableRecognizedSymbols.has(type) ||
         defaultBranch != null,
-          `map: Passed type key not found in branch map and no default value provided`
+          'map: Passed type key not found in branch map and no default value provided'
       )
 
       return (branchTable[type] || defaultBranch)
     }
 
-    function dispatcher (obj) {
+    function dispatcher (obj, ...args) {
       invariant(
         typeof obj === 'object',
         'dispatch expected an object'
@@ -40,19 +40,17 @@ export default ({ sort, expand, isDefined }, typeKey) => {
 
       invariant(
         objectTypeSymbol != null,
-        `dispatcher: passed object is not typed`
+        'dispatcher: passed object is not typed'
       )
 
       invariant(
         branchTableRecognizedSymbols.has(objectTypeSymbol) ||
         typeof defaultBranch === 'function',
-        `dispatcher: Passed object's type key not found in branch map and no default function provided`
+        'dispatcher: Passed object\'s type key not found in branch map and no default function provided'
       )
 
-      return (branchTable[objectTypeSymbol] || defaultBranch)(obj)
+      return (branchTable[objectTypeSymbol] || defaultBranch)(obj, ...args)
     }
-
-    return createDispatcher
   }
 
   function createBranchTable (collection) {
@@ -65,15 +63,15 @@ export default ({ sort, expand, isDefined }, typeKey) => {
     const orderedHashKeys = sort(Object.keys(hash))
 
     const expandedSequence = orderedHashKeys.reduce((accum, type) => {
-        accum.push(
-          expand(type).reduce((expanded, category) => {
-            expanded[category] = hash[type]
-            return expanded
-          }, {})
-        )
+      accum.push(
+        expand(type).reduce((expanded, category) => {
+          expanded[category] = hash[type]
+          return expanded
+        }, {})
+      )
 
-        return accum
-      }, [])
+      return accum
+    }, [])
 
     const branchTable = Object.assign({}, ...expandedSequence)
 
@@ -98,5 +96,4 @@ export default ({ sort, expand, isDefined }, typeKey) => {
       return hash
     }, {})
   }
-
 }
