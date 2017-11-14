@@ -1,6 +1,6 @@
-import invariant from 'invariant'
+const invariant = require('invariant')
 
-export default ({ isDefined }, typeKey) => (item, category) => {
+module.exports = ({ isDefined }, typeKey) => (item, category) => {
   invariant(
     item != null && (typeof item === 'object' || typeof item === 'function'),
     'Expected object or function to be passed into brand'

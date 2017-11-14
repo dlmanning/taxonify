@@ -1,6 +1,6 @@
-import invariant from 'invariant'
+const invariant = require('invariant')
 
-export default ({ is, isDefined }, typeKey) => category => {
+module.exports = ({ is, isDefined }, typeKey) => category => {
   invariant(
     isDefined(category),
     `createVerifier: received an unkown category`

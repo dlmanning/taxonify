@@ -1,13 +1,15 @@
-export const PLANE = 'plane'
-export const TRAIN = 'train'
-export const AUTOMOBILE = 'automobile'
-export const HONDA = 'honda'
-export const TOYOTA = 'toyota'
-export const CAR = 'car'
-export const TRUCK = 'truck'
-export const RIDGELINE = 'ridgeline'
-export const ACCORD = 'accord'
-export const TACOMA = 'tacoma'
-export const CAMRY = 'camry'
-export const ACCORD_SEDAN = 'accord_sedan'
-export const ACCORD_COUPE = 'accord_coupe'
+module.exports = {
+  PLANE: 'plane',
+  TRAIN: 'train',
+  AUTOMOBILE: 'automobile',
+  HONDA: 'honda',
+  TOYOTA: 'toyota',
+  CAR: 'car',
+  TRUCK: 'truck',
+  RIDGELINE: 'ridgeline',
+  ACCORD: 'accord',
+  TACOMA: 'tacoma',
+  CAMRY: 'camry',
+  ACCORD_SEDAN: 'accord_sedan',
+  ACCORD_COUPE: 'accord_coupe'
+}

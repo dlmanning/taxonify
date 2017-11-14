@@ -1,6 +1,6 @@
-import invariant from 'invariant'
+const invariant = require('invariant')
 
-export default function createCategoryOf (typeKey) {
+module.exports = function createCategoryOf (typeKey) {
   return obj => {
     invariant(
       typeof obj === 'object' && obj[typeKey] != null,

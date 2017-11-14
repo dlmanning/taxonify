@@ -1,6 +1,6 @@
-import * as t from './types'
+const t = require('./types')
 
-export default define => {
+module.exports = define => {
   define(t.AUTOMOBILE, [t.CAR, t.TRUCK])
   define(t.CAR, [t.CAMRY, t.ACCORD])
   define(t.TRUCK, [t.TACOMA, t.RIDGELINE])

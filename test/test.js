@@ -1,8 +1,8 @@
-import test from 'tape'
-import tapSpec from 'tap-spec'
-import { createTypeStore, createUtilities } from '../src'
-import relationships from './dtr'
-import {
+const test = require('tape')
+const tapSpec = require('tap-spec')
+const { createTypeStore, createUtilities } = require('../')
+const relationships = require('./dtr')
+const {
   PLANE,
   TRAIN,
   AUTOMOBILE,
@@ -16,7 +16,7 @@ import {
   ACCORD_COUPE,
   TACOMA,
   CAMRY
-} from './types'
+} = require('./types')
 
 test.createStream()
   .pipe(tapSpec())

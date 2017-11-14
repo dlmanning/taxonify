@@ -1,7 +1,7 @@
-import invariant from 'invariant'
-import reduce from 'universal-reduce'
+const invariant = require('invariant')
+const reduce = require('universal-reduce')
 
-export default ({ categories, recognizedCategories }) =>
+module.exports = ({ categories, recognizedCategories }) =>
   category => {
     invariant(
       recognizedCategories.has(category),

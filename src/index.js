@@ -1,9 +1,11 @@
-import createStore from './store/index'
-import createUtilities from './api/index'
+const createStore = require('./store')
+const createUtilities = require('./api')
 
-export const taxonify = (relationships, typeKey = Symbol('taxonify')) => {
-  const store = createStore(relationships)
-  return createUtilities(store, typeKey)
+module.exports = {
+  taxonify: (relationships, typeKey = Symbol('taxonify')) => {
+    const store = createStore(relationships)
+    return createUtilities(store, typeKey)
+  },
+  createTypeStore: createStore,
+  createUtilities
 }
-
-export { createStore as createTypeStore, createUtilities }

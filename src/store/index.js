@@ -1,1 +1,1 @@
-export { default as default } from './create-store'
+module.exports = require('./create-store')

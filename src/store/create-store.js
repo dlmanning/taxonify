@@ -1,8 +1,8 @@
-import reduce from 'universal-reduce'
-import invariant from 'invariant'
-import createSort from './toposort'
-import createExpand from './expand'
-import createIs from './is'
+const reduce = require('universal-reduce')
+const invariant = require('invariant')
+const createSort = require('./toposort')
+const createExpand = require('./expand')
+const createIs = require('./is')
 
 const createAccessors = store => ({
   sort: createSort(store),
@@ -10,7 +10,7 @@ const createAccessors = store => ({
   is: createIs(store)
 })
 
-export default function createTypeStore (buildRelationships) {
+module.exports = function createTypeStore (buildRelationships) {
   invariant(
     typeof buildRelationships === 'function',
     'createTypeStore requires a function as its argument'

@@ -1,10 +1,9 @@
-import createDispatchersFactory from './dispatcher'
-import createCreateVerifier from './verifier'
-import createBrand from './brand'
-import createCategoryOf from './category-of'
+const createDispatchersFactory = require('./dispatcher')
+const createCreateVerifier = require('./verifier')
+const createBrand = require('./brand')
+const createCategoryOf = require('./category-of')
 
-
-export default (store, typeKey) => {
+module.exports = (store, typeKey) => {
   const { createDispatcher, createMap } = createDispatchersFactory(store, typeKey)
 
   return {

@@ -1,6 +1,6 @@
-import invariant from 'invariant'
+const invariant = require('invariant')
 
-export default ({ categories, recognizedCategories }) =>
+module.exports = ({ categories, recognizedCategories }) =>
   unsorted => {
     invariant(
       Array.isArray(unsorted) &&
