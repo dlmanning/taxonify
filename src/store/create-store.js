@@ -1,5 +1,4 @@
 const reduce = require('universal-reduce')
-const invariant = require('invariant')
 const createSort = require('./toposort')
 const createExpand = require('./expand')
 const createIs = require('./is')
@@ -11,10 +10,9 @@ const createAccessors = store => ({
 })
 
 module.exports = function createTypeStore (buildRelationships) {
-  invariant(
-    typeof buildRelationships === 'function',
-    'createTypeStore requires a function as its argument'
-  )
+  if (typeof buildRelationships !== 'function') {
+    throw new TypeError('First parameter must be a function.')
+  }
 
   const categories = new Map()
   const recognizedCategories = new Set()
@@ -37,19 +35,17 @@ module.exports = function createTypeStore (buildRelationships) {
   return { is, expand, isDefined, sort }
 
   function def (category, subcategories) {
-    invariant(
-      category != null,
-      'define requires at least one argument'
-    )
+    if (category == null) {
+      throw new TypeError('The first parameter must be a category.')
+    }
 
     const setOfSubcategories = categories.has(category)
       ? categories.get(category)
       : new Set([ category ])
 
-    invariant(
-      subcategories == null || Array.isArray(subcategories),
-      'second argument to define, if provided, must be an array'
-    )
+    if (subcategories != null && !Array.isArray(subcategories)) {
+      throw new TypeError('The second parameter, if provided, must be an array of categories.')
+    }
 
     if (subcategories != null) {
       subcategories.forEach(subcategory =>

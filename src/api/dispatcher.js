@@ -1,4 +1,3 @@
-const invariant = require('invariant')
 const reduce = require('universal-reduce')
 
 module.exports = ({ sort, expand, isDefined }, typeKey) => {
@@ -16,48 +15,40 @@ module.exports = ({ sort, expand, isDefined }, typeKey) => {
     return { map, dispatcher }
 
     function map (type) {
-      invariant(
-        isDefined(type),
-        'map: unknown type passed to createMap'
-      )
+      if (!isDefined(type)) {
+        throw new Error('Received an unknown category')
+      }
 
-      invariant(
-        branchTableRecognizedSymbols.has(type) ||
-        defaultBranch != null,
-          'map: Passed type key not found in branch map and no default value provided'
-      )
+      if (!branchTableRecognizedSymbols.has(type) && defaultBranch == null) {
+        throw new Error('Passed type key not found in branch map and no default value provided')
+      }
 
       return (branchTable[type] || defaultBranch)
     }
 
     function dispatcher (obj, ...args) {
-      invariant(
-        typeof obj === 'object',
-        'dispatch expected an object'
-      )
+      if (typeof obj !== 'object') {
+        throw new TypeError('Expected an object')
+      }
 
       const objectTypeSymbol = obj[typeKey]
 
-      invariant(
-        objectTypeSymbol != null,
-        'dispatcher: passed object is not typed'
-      )
+      if (objectTypeSymbol == null) {
+        throw new Error('Passed object is not typed')
+      }
 
-      invariant(
-        branchTableRecognizedSymbols.has(objectTypeSymbol) ||
-        typeof defaultBranch === 'function',
-        'dispatcher: Passed object\'s type key not found in branch map and no default function provided'
-      )
+      if (!branchTableRecognizedSymbols.has(objectTypeSymbol) && typeof defaultBranch !== 'function') {
+        throw new Error('Passed object\'s type key not found in branch map and no default function provided')
+      }
 
       return (branchTable[objectTypeSymbol] || defaultBranch)(obj, ...args)
     }
   }
 
   function createBranchTable (collection) {
-    invariant(
-      collection != null && typeof collection === 'object',
-      'createBranchTable requires a collection'
-    )
+    if (collection == null || typeof collection !== 'object') {
+      throw new TypeError('Requires a collection')
+    }
 
     const hash = makeCategoryHash(collection)
     const orderedHashKeys = sort(Object.keys(hash))
@@ -86,10 +77,9 @@ module.exports = ({ sort, expand, isDefined }, typeKey) => {
           ? value[typeKey]
           : undefined
 
-      invariant(
-        category != null,
-        'unable to determine a valid category for: ' + key
-      )
+      if (category == null) {
+        throw new Error(`Unable to determine a valid category for: ${key}`)
+      }
 
       hash[category] = value
 

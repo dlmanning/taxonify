@@ -1,28 +1,26 @@
-const invariant = require('invariant')
-
 module.exports = ({ categories, recognizedCategories }) =>
   unsorted => {
-    invariant(
-      Array.isArray(unsorted) &&
-      unsorted.every(item => recognizedCategories.has(item)),
-      'sort requires an array of known categories'
-    )
+    if (!Array.isArray(unsorted)) {
+      throw new TypeError('Sorting requires an array of categories')
+    }
+    
+    if (unsorted.some(item => !recognizedCategories.has(item))) {
+      throw new Error('Cannot sort unknown category')
+    }
 
     const sorted = [], marked = new Set(), unmarked = new Set(unsorted)
 
     while (unmarked.size > 0) {
-      const n = [...unmarked][0]
+      const n = Array.from(unmarked)[0]
       visit(n)
     }
 
     return sorted
 
     function visit (n, visited = new Set()) {
-      invariant(
-        !visited.has(n),
-        'A cyclic dependency exists in category defintions. ' +
-        'Unable to apply topographical sort'
-      )
+      if (visited.has(n)) {
+        throw new Error(`A cyclic dependency exists in category defintions. ${n} visited twice`)
+      }
 
       if (!marked.has(n)) {
         visited.add(n)

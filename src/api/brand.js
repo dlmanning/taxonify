@@ -1,20 +1,17 @@
 const invariant = require('invariant')
 
 module.exports = ({ isDefined }, typeKey) => (item, category) => {
-  invariant(
-    item != null && (typeof item === 'object' || typeof item === 'function'),
-    'Expected object or function to be passed into brand'
-  )
+  if (item == null || (typeof item !== 'object' && typeof item !== 'function')) {
+    throw new TypeError('Expected object or function to be passed into brand')
+  }
 
-  invariant(
-    isDefined(category),
-    'Unknown category: %s', category
-  )
+  if (!isDefined(category)) {
+    throw new Error(`Unknown category ${category}`)
+  }
 
-  invariant(
-    item[typeKey] == null,
-    'Passed object already has a type key'
-  )
+  if (item[typeKey] != null) {
+    throw new Error('Passed object already has a type key')
+  }
 
   item[typeKey] = category
 

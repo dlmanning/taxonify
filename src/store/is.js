@@ -1,11 +1,8 @@
-const invariant = require('invariant')
-
 module.exports = ({ categories, recognizedCategories }) =>
   category => {
-    invariant(
-      recognizedCategories.has(category),
-      'Typestore: Unknown category: %s', category
-    )
+    if (!recognizedCategories.has(category)) {
+      throw new Error(`Unknown category: ${category}`)
+    }
 
     const setOfSubcategories = categories.has(category)
       ? categories.get(category)

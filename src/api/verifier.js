@@ -1,10 +1,7 @@
-const invariant = require('invariant')
-
 module.exports = ({ is, isDefined }, typeKey) => category => {
-  invariant(
-    isDefined(category),
-    `createVerifier: received an unkown category`
-  )
+  if (!isDefined(category)) {
+    throw new Error('Received an unknown category')
+  }
 
   const checker = is(category)
 

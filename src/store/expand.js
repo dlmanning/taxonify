@@ -1,13 +1,11 @@
-const invariant = require('invariant')
 const reduce = require('universal-reduce')
 
 module.exports = ({ categories, recognizedCategories }) =>
   category => {
-    invariant(
-      recognizedCategories.has(category),
-      'Typestore: Unknown category: %s', category
-    )
-
+    if (!recognizedCategories.has(category)) {
+      throw new Error(`Unknown category: ${category}`)
+    }
+  
     const expandedCategories = new Set()
 
     let categoriesToExpand = [ category ]
@@ -27,5 +25,5 @@ module.exports = ({ categories, recognizedCategories }) =>
 
     }
 
-    return [...expandedCategories]
+    return Array.from(expandedCategories)
 }
