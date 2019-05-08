@@ -1,4 +1,3 @@
-const reduce = require('universal-reduce')
 const createSort = require('./toposort')
 const createExpand = require('./expand')
 const createIs = require('./is')
