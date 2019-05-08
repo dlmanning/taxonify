@@ -1,5 +1,3 @@
-const invariant = require('invariant')
-
 module.exports = ({ isDefined }, typeKey) => (item, category) => {
   if (item == null || (typeof item !== 'object' && typeof item !== 'function')) {
     throw new TypeError('Expected object or function to be passed into brand')
